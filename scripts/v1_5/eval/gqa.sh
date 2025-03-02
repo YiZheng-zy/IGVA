@@ -35,5 +35,5 @@ done
 
 python scripts/convert_gqa_for_eval.py --src $output_file --dst $GQADIR/testdev_balanced_predictions.json
 
-cd $GQADIR
+cd $GQADIR 
 python eval/eval.py --tier testdev_balanced

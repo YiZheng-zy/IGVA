@@ -8,8 +8,10 @@ from PIL import Image
 
 class SeparatorStyle(Enum):
     """Different separator style."""
-    SINGLE = auto()
-    TWO = auto()
+    # SINGLE, TWO, MPT, PLAIN, 和 LLAMA_2 这几个枚举成员会自动获得整数值，按照定义顺序从1开始。
+    # 例如，SINGLE 的值会是1，TWO 的值会是2，以此类推。
+    SINGLE = auto() # 每个角色的发言后加上统一的分隔符
+    TWO = auto() # 每个角色享有不同的分隔符
     MPT = auto()
     PLAIN = auto()
     LLAMA_2 = auto()
@@ -18,30 +20,38 @@ class SeparatorStyle(Enum):
 @dataclasses.dataclass
 class Conversation:
     """A class that keeps all conversation history."""
-    system: str
-    roles: List[str]
-    messages: List[List[str]]
-    offset: int
-    sep_style: SeparatorStyle = SeparatorStyle.SINGLE
-    sep: str = "###"
-    sep2: str = None
-    version: str = "Unknown"
+    system: str # 系统消息
+    roles: List[str] # 对话中参与者的称谓
+    messages: List[List[str]] # 储存对话内容的列表
+    offset: int # 一个整数，用于标记对话的起始位置
+    sep_style: SeparatorStyle = SeparatorStyle.SINGLE # 分隔符用于分割不同轮对话的内容
+    sep: str = "###" 
+    sep2: str = None 
+    version: str = "Unknown" # 对话的版本信息
+    skip_next: bool = False # 用于控制是否跳过下一条消息
 
-    skip_next: bool = False
 
+    # 根据 sep_style 生成上下文的文本表示形式，返回一个str
     def get_prompt(self):
+        # messages的形式：[['human', 'content1'], ['AI', 'content2'], ...]，若content含有图像，则可以是一个tuple
         messages = self.messages
+        
+        # 如果messages的第一条消息的内容是一个元组（表示包含了图像和文本），则处理图像相关的特殊token
         if len(messages) > 0 and type(messages[0][1]) is tuple:
             messages = self.messages.copy()
             init_role, init_msg = messages[0].copy()
+            # 首先删除 <image> token 
             init_msg = init_msg[0].replace("<image>", "").strip()
+            # 若version包含'mmtag'，则在首条message的role0内容前插入"<Image><image></Image>"，在role1内容前插入"Received."
             if 'mmtag' in self.version:
                 messages[0] = (init_role, init_msg)
                 messages.insert(0, (self.roles[0], "<Image><image></Image>"))
                 messages.insert(1, (self.roles[1], "Received."))
-            else:
+            # 如果没有 ’mmtag‘，则在首条message的role0内容前插入‘<image>\n’
+            else: 
                 messages[0] = (init_role, "<image>\n" + init_msg)
-
+        
+        # 根据不同的分隔符模式，对messages中的历史消息进行拼接
         if self.sep_style == SeparatorStyle.SINGLE:
             ret = self.system + self.sep
             for role, message in messages:
@@ -55,7 +65,7 @@ class Conversation:
             seps = [self.sep, self.sep2]
             ret = self.system + seps[0]
             for i, (role, message) in enumerate(messages):
-                if message:
+                if message: 
                     if type(message) is tuple:
                         message, _, _ = message
                     ret += role + ": " + message + seps[i % 2]
@@ -105,11 +115,14 @@ class Conversation:
             raise ValueError(f"Invalid style: {self.sep_style}")
 
         return ret
-
+    
+    # 向对话中添加新的消息
     def append_message(self, role, message):
         self.messages.append([role, message])
 
+    # 处理图像，根据不同的模式调整图像大小、裁剪或填充
     def process_image(self, image, image_process_mode, return_pil=False, image_format='PNG', max_len=1344, min_len=672):
+        # 将图像填充为正方形
         if image_process_mode == "Pad":
             def expand2square(pil_img, background_color=(122, 116, 104)):
                 width, height = pil_img.size
@@ -124,12 +137,16 @@ class Conversation:
                     result.paste(pil_img, ((height - width) // 2, 0))
                     return result
             image = expand2square(image)
+        # 不做任何处理
         elif image_process_mode in ["Default", "Crop"]:
             pass
+        # 直接将图像调整至336分辨率
         elif image_process_mode == "Resize":
             image = image.resize((336, 336))
         else:
             raise ValueError(f"Invalid image_process_mode: {image_process_mode}")
+        
+        # 确保处理后的图像尺寸不会超过 max_len
         if max(image.size) > max_len:
             max_hw, min_hw = max(image.size), min(image.size)
             aspect_ratio = max_hw / min_hw
@@ -141,6 +158,8 @@ class Conversation:
             else:
                 H, W = shortest_edge, longest_edge
             image = image.resize((W, H))
+            
+        # 根据 return_pil 参数的值，决定返回处理后的 PIL.Image 对象或Base64编码的字符串
         if return_pil:
             return image
         else:
@@ -149,6 +168,7 @@ class Conversation:
             img_b64_str = base64.b64encode(buffered.getvalue()).decode()
             return img_b64_str
 
+    # 从对话中提取图像，并进行处理
     def get_images(self, return_pil=False):
         images = []
         for i, (role, msg) in enumerate(self.messages[self.offset:]):
@@ -158,7 +178,8 @@ class Conversation:
                     image = self.process_image(image, image_process_mode, return_pil=return_pil)
                     images.append(image)
         return images
-
+    
+    #  将对话转换为适用于Gradio的格式，便于显示在聊天机器人界面中
     def to_gradio_chatbot(self):
         ret = []
         for i, (role, msg) in enumerate(self.messages[self.offset:]):
@@ -176,7 +197,8 @@ class Conversation:
             else:
                 ret[-1][-1] = msg
         return ret
-
+    
+    # 深拷贝
     def copy(self):
         return Conversation(
             system=self.system,
@@ -188,6 +210,7 @@ class Conversation:
             sep2=self.sep2,
             version=self.version)
 
+    # 将 Conversation 转换为字典形式，便于序列化或其他用途
     def dict(self):
         if len(self.get_images()) > 0:
             return {
@@ -248,7 +271,7 @@ conv_vicuna_v1 = Conversation(
     offset=0,
     sep_style=SeparatorStyle.TWO,
     sep=" ",
-    sep2="</s>",
+    sep2="</s>", 
 )
 
 conv_llama_2 = Conversation(
@@ -322,6 +345,7 @@ conv_llava_v0_mmtag = Conversation(
     version="v0_mmtag",
 )
 
+################### llava-v1.5 所用模版 ##################
 conv_llava_v1 = Conversation(
     system="A chat between a curious human and an artificial intelligence assistant. "
            "The assistant gives helpful, detailed, and polite answers to the human's questions.",
@@ -333,6 +357,7 @@ conv_llava_v1 = Conversation(
     sep=" ",
     sep2="</s>",
 )
+##########################################################
 
 conv_llava_v1_mmtag = Conversation(
     system="A chat between a curious user and an artificial intelligence assistant. "
@@ -370,17 +395,18 @@ Answer the questions.""",
 )
 
 default_conversation = conv_vicuna_v1
+
 conv_templates = {
     "default": conv_vicuna_v0,
     "v0": conv_vicuna_v0,
-    "v1": conv_vicuna_v1,
+    "v1": conv_vicuna_v1, 
     "vicuna_v1": conv_vicuna_v1,
     "llama_2": conv_llama_2,
     "mistral_instruct": conv_mistral_instruct,
     "chatml_direct": conv_chatml_direct,
     "mistral_direct": conv_chatml_direct,
 
-    "plain": conv_llava_plain,
+    "plain": conv_llava_plain, 
     "v0_plain": conv_llava_plain,
     "llava_v0": conv_llava_v0,
     "v0_mmtag": conv_llava_v0_mmtag,

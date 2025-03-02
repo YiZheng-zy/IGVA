@@ -8,7 +8,7 @@ import ast
 from transformers import StoppingCriteria
 from llava.constants import IMAGE_TOKEN_INDEX
 
-
+# 从一组可能的分辨率中选择一个最适合原始图像尺寸的分辨率，该选择基于两个标准：有效分辨率的最大化和分辨率浪费的最小化
 def select_best_resolution(original_size, possible_resolutions):
     """
     Selects the best resolution from a list of possible resolutions based on the original size.
@@ -36,9 +36,9 @@ def select_best_resolution(original_size, possible_resolutions):
             min_wasted_resolution = wasted_resolution
             best_fit = (width, height)
 
-    return best_fit
+    return best_fit 
 
-
+# 将输入图像调整为目标分辨率
 def resize_and_pad_image(image, target_resolution):
     """
     Resize and pad an image to a target resolution while maintaining aspect ratio.
@@ -73,7 +73,7 @@ def resize_and_pad_image(image, target_resolution):
 
     return new_image
 
-
+# 将图像进行子图划分
 def divide_to_patches(image, patch_size):
     """
     Divides an image into patches of a specified size.
@@ -95,7 +95,7 @@ def divide_to_patches(image, patch_size):
 
     return patches
 
-
+# 计算给定图像在水平方向和垂直方向上被分割成多少个子图
 def get_anyres_image_grid_shape(image_size, grid_pinpoints, patch_size):
     """
     Calculate the shape of the image patch grid after the preprocessing for images of any resolution.
@@ -115,7 +115,8 @@ def get_anyres_image_grid_shape(image_size, grid_pinpoints, patch_size):
     width, height = select_best_resolution(image_size, possible_resolutions)
     return width // patch_size, height // patch_size
 
-
+# 将任意分辨率的图像进行分辨率调整和子图划分
+# 若原始图像的分辨率很小，会按照最适合的目标分辨率进行放大
 def process_anyres_image(image, processor, grid_pinpoints):
     """
     Process an image with variable resolutions.
@@ -128,18 +129,23 @@ def process_anyres_image(image, processor, grid_pinpoints):
     Returns:
         torch.Tensor: A tensor containing the processed image patches.
     """
+    # 得到目标分辨率的列表 [(h1, w1), (h2, w2), ...]
     if type(grid_pinpoints) is list:
         possible_resolutions = grid_pinpoints
     else:
         possible_resolutions = ast.literal_eval(grid_pinpoints)
+        
+    # 从可能的分辨率列表中选择一个最适合当前图像尺寸的目标分辨率
     best_resolution = select_best_resolution(image.size, possible_resolutions)
-    image_padded = resize_and_pad_image(image, best_resolution)
-
+    # 将输入图像调整为目标分辨率。若图像的宽高比不符合目标分辨率，会填充空白区域（通常为黑色），以适应目标分辨率
+    image_padded = resize_and_pad_image(image, best_resolution) 
+    # 将调整后的图像划分为多个子图。每个子图的尺寸由 processor.crop_size['height'] 决定
     patches = divide_to_patches(image_padded, processor.crop_size['height'])
-
+    # 将原始图像缩放到与子图相同的分辨率
     image_original_resize = image.resize((processor.size['shortest_edge'], processor.size['shortest_edge']))
-
+    # 组合子图和整图
     image_patches = [image_original_resize] + patches
+    # 使用CLIP自带的图像处理器对每个图像块（包括原始图像和所有子图）进行预处理
     image_patches = [processor.preprocess(image_patch, return_tensors='pt')['pixel_values'][0]
                      for image_patch in image_patches]
     return torch.stack(image_patches, dim=0)
@@ -148,7 +154,7 @@ def process_anyres_image(image, processor, grid_pinpoints):
 def load_image_from_base64(image):
     return Image.open(BytesIO(base64.b64decode(image)))
 
-
+# 将图像按照background_color的像素值填充为正方形
 def expand2square(pil_img, background_color):
     width, height = pil_img.size
     if width == height:
@@ -164,41 +170,61 @@ def expand2square(pil_img, background_color):
 
 
 def process_images(images, image_processor, model_cfg):
+    # images: 一个图像对象的列表，每个图像对象是 PIL.Image.Image 类
+    # image_processor: 一个图像处理器对象，是 CLIPImageProcessor 类
+    # model_cfg: 模型配置参数，控制图像处理行为
+    
+    # 获取如何处理图像的宽高比, model_cfg来自模型权重文件夹中的config文件
     image_aspect_ratio = getattr(model_cfg, "image_aspect_ratio", None)
+    
     new_images = []
     if image_aspect_ratio == 'pad':
         for image in images:
+            # 用于将图像填充为正方形，填充的是clip配置文件中三个channel的像素均值，均值归一化后就变成0了
             image = expand2square(image, tuple(int(x*255) for x in image_processor.image_mean))
+            # 将填充后的图像进行CLIP自带的预处理流程
             image = image_processor.preprocess(image, return_tensors='pt')['pixel_values'][0]
+            # 将一个(3, 336, 336)的tensor加入列表 
             new_images.append(image)
     elif image_aspect_ratio == "anyres":
         for image in images:
+            # 进行子图划分
             image = process_anyres_image(image, image_processor, model_cfg.image_grid_pinpoints)
+            # 将一个(N, 3, 336, 336)的tensor加入列表，N代表子图个数
             new_images.append(image)
     else:
+        # 如果 image_aspect_ratio 没有定义，则直接使用 image_processor 对图像列表进行预处理
+        # 最后输出的是一个（N, 3, 336, 336）的tensor，N代表图像的数量
         return image_processor(images, return_tensors='pt')['pixel_values']
+    # 把 new_images 中的tensor拼成一个大tensor
     if all(x.shape == new_images[0].shape for x in new_images):
         new_images = torch.stack(new_images, dim=0)
-    return new_images
+    return new_images 
 
-
+# 将包含特殊token的文本提示（prompt）转换为适合模型输入的 input_ids
 def tokenizer_image_token(prompt, tokenizer, image_token_index=IMAGE_TOKEN_INDEX, return_tensors=None):
+    # 将prompt按照 <image> 标签进行分块，第一个块其实就对应sys message
+    # 对于每个块中的字符串，使用tokenizer对其进行分词，得到对应的input_ids列表
     prompt_chunks = [tokenizer(chunk).input_ids for chunk in prompt.split('<image>')]
-
+    
+    # 将 sep 插入到列表 X 中的每两个元素之间，并去掉最后一个 sep
     def insert_separator(X, sep):
         return [ele for sublist in zip(X, [sep]*len(X)) for ele in sublist][:-1]
 
     input_ids = []
     offset = 0
+    # 如果prompt_chunks中的第一个片段存在，且第一个 input_id 是 bos_token_id，那么 offset 设置为 1，并将该标记加入 input_ids 列表。
     if len(prompt_chunks) > 0 and len(prompt_chunks[0]) > 0 and prompt_chunks[0][0] == tokenizer.bos_token_id:
         offset = 1
         input_ids.append(prompt_chunks[0][0])
-
+        
+    # 将每个分割后的文本片段的 input_ids 插入到 input_ids 列表中，并在片段之间插入图像标记 image_token_index
     for x in insert_separator(prompt_chunks, [image_token_index] * (offset + 1)):
         input_ids.extend(x[offset:])
-
+    
+    # 如果 return_tensors 是 'pt'，则返回 PyTorch 的 LongTensor。否则，返回一个普通的列表 input_ids。
     if return_tensors is not None:
-        if return_tensors == 'pt':
+        if return_tensors == 'pt': 
             return torch.tensor(input_ids, dtype=torch.long)
         raise ValueError(f'Unsupported tensor type: {return_tensors}')
     return input_ids

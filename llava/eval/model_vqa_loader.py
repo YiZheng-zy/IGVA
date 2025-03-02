@@ -76,25 +76,35 @@ def create_data_loader(questions, image_folder, tokenizer, image_processor, mode
     return data_loader
 
 
-def eval_model(args):
-    # Model
+def eval_model(args): 
+    # Model 
+    # 禁用 PyTorch 的默认初始化，以加速模型加载过程
     disable_torch_init()
+    # 获取模型路径，支持用户的 ~（home）路径展开
     model_path = os.path.expanduser(args.model_path)
+    # 从模型路径中获取模型名称
     model_name = get_model_name_from_path(model_path)
+    # 加载模型
     tokenizer, model, image_processor, context_len = load_pretrained_model(model_path, args.model_base, model_name)
-
+    # 从指定的 question_file 文件中加载问题数据
     questions = [json.loads(q) for q in open(os.path.expanduser(args.question_file), "r")]
+    # 将问题数据按指定的块进行分割，一个块对应一个GPU（并行计算）
     questions = get_chunk(questions, args.num_chunks, args.chunk_idx)
+    # 指定保存答案的文件路径
     answers_file = os.path.expanduser(args.answers_file)
+    # 不存在答案路径时创建
     os.makedirs(os.path.dirname(answers_file), exist_ok=True)
+    # 以写入模式打开答案文件
     ans_file = open(answers_file, "w")
 
     if 'plain' in model_name and 'finetune' not in model_name.lower() and 'mmtag' not in args.conv_mode:
-        args.conv_mode = args.conv_mode + '_mmtag'
+        args.conv_mode = args.conv_mode + '_mmtag' 
         print(f'It seems that this is a plain model, but it is not using a mmtag prompt, auto switching to {args.conv_mode}.')
-
+    
+    # 创建一个数据加载器，用于加载问题和图像，并进行批处理
     data_loader = create_data_loader(questions, args.image_folder, tokenizer, image_processor, model.config)
-
+    
+    # 处理每个输入并生成模型输出
     for (input_ids, image_tensor, image_sizes), line in tqdm(zip(data_loader, questions), total=len(questions)):
         idx = line["question_id"]
         cur_prompt = line["text"]
@@ -115,7 +125,7 @@ def eval_model(args):
 
         outputs = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
 
-        ans_id = shortuuid.uuid()
+        ans_id = shortuuid.uuid() # 生成一个唯一的答案ID
         ans_file.write(json.dumps({"question_id": idx,
                                    "prompt": cur_prompt,
                                    "text": outputs,
@@ -128,10 +138,10 @@ def eval_model(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", type=str, default="facebook/opt-350m")
-    parser.add_argument("--model-base", type=str, default=None)
-    parser.add_argument("--image-folder", type=str, default="")
-    parser.add_argument("--question-file", type=str, default="tables/question.jsonl")
-    parser.add_argument("--answers-file", type=str, default="answer.jsonl")
+    parser.add_argument("--model-base", type=str, default=None) 
+    parser.add_argument("--image-folder", type=str, default="") 
+    parser.add_argument("--question-file", type=str, default="tables/question.jsonl") 
+    parser.add_argument("--answers-file", type=str, default="answer.jsonl") 
     parser.add_argument("--conv-mode", type=str, default="llava_v1")
     parser.add_argument("--num-chunks", type=int, default=1)
     parser.add_argument("--chunk-idx", type=int, default=0)
