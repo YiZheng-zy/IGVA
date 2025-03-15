@@ -17,7 +17,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
 ## 目录
 - [Performance](#Performance)
 - [Framework](#Framework)
-- [安装](#安装)
+- [Evaluate](#Evaluate)
 - [训练](#训练)
 - [评估](#评估)
 
@@ -50,7 +50,7 @@ hierarchical visual feature fusion methods as well as similarly scaled LVLMs
 
 The overall framework is illustrated. It consists of four main modules: a vision encoder $V$, a vision-language adapter $ADP$, an instruction-guided vision aggregator $\mathit{IGVA}$, and an LLM. For demonstration purposes, we use the widely adopted LLaVA-v1.5  as the implementation framework.
 
-![Overview of the proposed framework.](images/Framework.png){#fig:framework}
+![Overview of the proposed framework.](images/Framework.png)
 
 **Vision Encoder**  
 We use CLIP-ViT as the vision encoder. It divides an input image $\mathbf{I} \in \mathbb{R}^{C \times H \times W}$ into small patches and processes the patch sequence through a stack of transformer layers. The hierarchical output of the vision encoder is:
@@ -108,23 +108,46 @@ where $D_t$ is the hidden dimension of the LLM.
 **Large Language Model**  
 The LLM first tokenizes the textual instruction and computes embeddings for each token. These text embeddings are then concatenated with the aligned visual features along the sequence dimension. The resulting combined sequence is processed through a stack of transformer layers, ultimately generating a textual response.
 
-### 通用多模态基准测试的结果
-
+## Evaluate
+### VQA benchmarks
 <p align="center">
-    <img src="images/eval-leida.png" width="90%"></a>
+    <img src="images/VQA.png" width="90%"></a>
 </p>
 
-不同模型大小的性能比较。 （左）与包括 Qwen-VL-Chat、LLaVA-1.5-7B 在内的 7B 模型相比，我们的模型在 12 个基准测试中的 11 个上实现了 SoTA。 （右）与包括 InstructBLIP、LLaVA-1.5-13B 在内的 13B 模型相比，我们的模型在 12 个基准测试中的 10 个上实现了 SoTA。
+Performance comparison on mainstream image-based VQA benchmarks. Bold values
+indicate the best score in each row, while underlined values represent the second-best score.
 
-与传统 VQA 基准测试和最近的多模式基准测试上最先进的 VLLM 进行比较。最佳结果以 **粗体** 标记，第二好结果以 <u>下划线</u> 标记。
 
+Table presents a comparison of our method with the baseline and two existing hi-
+erarchical visual feature fusion approaches across 10 image-based VQA benchmarks,
+including 6 LVLM-specific benchmarks and 4 traditional VQA datasets.
+On LVLM-specific benchmarks, our method significantly outperforms the baseline
+and consistently surpasses existing fusion methods, demonstrating its effectiveness in
+leveraging hierarchical visual information tailored to different tasks. On traditional
+VQA benchmarks, our method achieves the highest scores on SQA, TextVQA, and
+VizWiz. While our approach surpasses both the baseline and MMFuser on GQA, it
+slightly underperforms DenseConnector. Since GQA is designed for compositional
+reasoning, the textual questions contain complex linguistic structures , which
+may challenge the sentence embedding model in accurately capturing task-relevant
+information. This, in turn, may hinder the vision aggregator from deriving optimal
+feature-weighting distributions.
+
+### Visual Grounding and Video Understanding
 <p align="center">
-    <img src="images/eval-res.png" width="90%"></a>
+    <img src="images/other.png" width="90%"></a>
 </p>
 
-加入MMFuser后，LLaVA-1.5的性能得到了大幅提升，在多个基准测试中超越了LLaVA-1.5。
-其中，在Vizwiz、MME和MMBench上的得分分别为57.4、
-1585.2和69.9，分别比LLaVA-1.5高出3.8分、53.9分和2.2分。
+Performance comparison on visual grounding and video understanding benchmarks. For
+visual grounding, the score of each benchmark is averaged across val and test splits. Bold values
+indicate the best score in each column, while underlined values represent the second-best score.
+
+Table presents the results for visual grounding, where our
+method consistently achieves the highest scores across all benchmarks. This high-lights its effectiveness in enhancing object-region alignment across diverse image
+contexts. The right section of table 5 reports the results for video understanding.
+Apart from ActivityNet-QA, where our method achieves performance on par with
+DenseConnector, it surpasses both the baseline and DenseConnector across all other
+video benchmarks. This demonstrates that our method captures richer task-related
+visual representations, which is crucial for modeling temporal dynamics and contex-tual dependencies across video frames.
 
 ### OCRBench 上的结果
 
