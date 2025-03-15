@@ -1,4 +1,4 @@
-<h2 align="center">MMFuser: Multimodal Multi-Layer Feature Fuser for Fine-Grained Vision-Language Understanding</h2>
+<h2 align="center">Instruction-Guided Fusion of Multi-Layer Visual Features in Large Vision-Language Models</h2>
 
 <div align="center">
 
@@ -6,12 +6,12 @@ English | [简体中文](README_CN.md)
 
 </div>
 
-The official implementation of the paper "[MMFuser: Multimodal Multi-Layer Feature Fuser for Fine-Grained Vision-Language Understanding](https://arxiv.org/abs/2410.11829)".
+The official implementation of the paper "[Instruction-Guided Fusion of Multi-Layer Visual Features in Large Vision-Language Models](https://arxiv.org/abs/2501.08443)".
 
 ## 📣 News
 
-- **[Oct 16, 2024]** The paper has been released on [arXiv](https://arxiv.org/abs/2410.11829)!
-- **[May 30, 2024]**  🔥🔥🔥 Code has been released.
+- **[Dec 26, 2024]** The paper has been released on [arXiv]([https://arxiv.org/abs/2410.11829](https://arxiv.org/abs/2501.08443))!
+- **[Mar 10, 2025]**  🔥🔥🔥 Code has been released.
 
 ## Table of Contents
 - [Overview](#overview)
