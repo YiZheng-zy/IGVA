@@ -9,7 +9,7 @@
 The official implementation of the paper "[Instruction-Guided Fusion of Multi-Layer Visual Features in Large Vision-Language Models](https://arxiv.org/abs/2501.08443)" 的官方实现。
 
 
-## 📣 新闻
+## 📣 News
 
 - **[Dec 26, 2024]** The paper has been released on [arXiv](https://arxiv.org/abs/2501.08443)发布！
 - **[March 10, 202]**  🔥🔥🔥 Code has been released.
