@@ -1,4 +1,4 @@
-<h2 align="center">MMFuser: 用于精细视觉语言理解的多模态多层特征融合器</h2>
+<h2 align="center">Instruction-Guided Fusion of Multi-Layer Visual Features in Large Vision-Language Models</h2>
 
 <div align="center">
 
@@ -6,31 +6,33 @@
 
 </div>
 
-文章 "[MMFuser: Multimodal Multi-Layer Feature Fuser for Fine-Grained Vision-Language Understanding](https://arxiv.org/abs/2410.11829)" 的官方实现。
+文章 "[Instruction-Guided Fusion of Multi-Layer Visual Features in Large Vision-Language Models](https://arxiv.org/abs/2501.08443)" 的官方实现。
 
 
 ## 📣 新闻
 
-- **[10月 16, 2024]** 论文已在[arXiv](https://arxiv.org/abs/2410.11829)发布！
+- **[10月 16, 2024]** 论文已在[arXiv](https://arxiv.org/abs/2501.08443)发布！
 - **[5月 30, 2024]**  🔥🔥🔥 源码已经发布。
 
 ## 目录
-- [总览](#总览)
 - [效果](#效果)
+- [架构](#架构)
 - [安装](#安装)
 - [训练](#训练)
 - [评估](#评估)
 
-## 总览
+## 效果
 
 <p align="center">
-    <img src="images/method-comprehension.png" width="70%"></a>
+    <img src="images/radar_chart.pdf" width="70%"></a>
 </p>
 
-与以前的体系结构相比：
-（a） 仅CLIP：仅使用单层视觉特征，例如倒数第二层；
-（b） 混合：集成多个视觉编码器以增强图像表示；
-（c） MMFuser（我们的）：一个多层特征融合模块，用于处理来自视觉主干不同层的图像特征（如CLIP）。
+Performance comparison of our method against the baseline and competing approaches.
++ We systematically analyze how hierarchical visual features influence LVLM
+performance across diverse task categories. Our findings reveal that different
+layers of the vision encoder play distinct roles, emphasizing the necessity of
+task-aware feature fusion rather than static fusion strategies.
++ 
 
 <p align="center">
     <img src="images/mmfuser-diagram.png" width="95%"></a>
