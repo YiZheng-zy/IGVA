@@ -38,9 +38,6 @@ improving adaptability without increasing the number of visual tokens.
 achieving significant improvements over the baseline and surpassing existing
 hierarchical visual feature fusion methods as well as similarly scaled LVLMs
 
-<p align="center">
-    <img src="images/mmfuser-diagram.png" width="95%"></a>
-</p>
 
 
 
@@ -149,7 +146,7 @@ visual representations, which is crucial for modeling temporal dynamics and cont
 
 ### Visual Representation Visualization
 
-To intuitively validate the impact of MMFuser on visual features, we present the input and output feature map visualizations for four example images in the figure.
+To intuitively validate the impact of IGVA on visual features, we present the input and output feature map visualizations for four example images in the figure.
 
 <p align="center">
     <img src="images/attention.png" width="90%"></a>
@@ -157,7 +154,7 @@ To intuitively validate the impact of MMFuser on visual features, we present the
 
 ## Install
 
-1. Clone this repository and navigate to MMFuser folder
+1. Clone this repository and navigate to IGVA folder
     ```bash
     git clone git@github.com:YiZheng-zy/IGVA.git
     cd IGVA
@@ -186,7 +183,7 @@ To intuitively validate the impact of MMFuser on visual features, we present the
 Our training pipeline and datasets  are directly borrowed from [LLaVA-v1.5](https://github.com/haotian-liu/LLaVA). The training consists of two stages: 
 - *Pretraining*: Train a projector on a subset of ~558K image-text pairs to connect a frozen pretrained vision encoder and a frozen LLM.
     ```bash
-    sh scripts/mmfuser/pertrain_IGVA.sh
+    sh scripts/v1_5/pertrain_IGVA.sh
     ```
 - *Instruction Tuning*: Fine tune the entire MLLM using multimodal instruction data LLaVA-665K.
     ```bash
