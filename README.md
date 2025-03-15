@@ -97,7 +97,7 @@ To intuitively validate the impact of MMFuser on visual features, we present the
 
 1. Clone this repository and navigate to MMFuser folder
     ```bash
-    git clone git@github.com:yuecao0119/MMFuser.git
+    git clone git@github.com:YiZheng-zy/IGVA.git
     cd MMFuser
     ```
 
