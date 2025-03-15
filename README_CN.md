@@ -46,7 +46,10 @@ hierarchical visual feature fusion methods as well as similarly scaled LVLMs
 
 
 
-## 效果
+## Framework
+<p align="center">
+    <img src="images/eval-leida.png" width="90%"></a>
+</p>
 
 ### 通用多模态基准测试的结果
 
