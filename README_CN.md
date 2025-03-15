@@ -2,8 +2,6 @@
 
 <div align="center">
 
-[English](README.md) | 简体中文
-
 </div>
 
 The official implementation of the paper "[Instruction-Guided Fusion of Multi-Layer Visual Features in Large Vision-Language Models](https://arxiv.org/abs/2501.08443)" .
@@ -11,7 +9,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
 
 ## 📣 News
 
-- **[Dec 26, 2024]** The paper has been released on [arXiv](https://arxiv.org/abs/2501.08443)发布！
+- **[Dec 26, 2024]** The paper has been released on [arXiv](https://arxiv.org/abs/2501.08443)!
 - **[March 10, 202]**  🔥🔥🔥 Code has been released.
 
 ## 目录
