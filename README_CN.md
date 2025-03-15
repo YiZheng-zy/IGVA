@@ -15,13 +15,13 @@
 - **[5月 30, 2024]**  🔥🔥🔥 源码已经发布。
 
 ## 目录
-- [效果](#效果)
+- [Performance](#Performance)
 - [架构](#架构)
 - [安装](#安装)
 - [训练](#训练)
 - [评估](#评估)
 
-## 效果
+## Performance
 
 <p align="center">
     <img src="images/radar_chart.png" width="70%"></a>
@@ -36,7 +36,7 @@ task-aware feature fusion rather than static fusion strategies.
 fusion weights to hierarchical visual features based on task-specific instructions.
 This mechanism enables LVLMs to selectively emphasize task-relevant features,
 improving adaptability without increasing the number of visual tokens.
-+We integrate the proposed vision aggregator into the LLaVA-v1.5 framework,
++ We integrate the proposed vision aggregator into the LLaVA-v1.5 framework,
 achieving significant improvements over the baseline and surpassing existing
 hierarchical visual feature fusion methods as well as similarly scaled LVLMs
 
@@ -44,7 +44,7 @@ hierarchical visual feature fusion methods as well as similarly scaled LVLMs
     <img src="images/mmfuser-diagram.png" width="95%"></a>
 </p>
 
-**MMFuser**是为**多**模态**多**层特征融合而设计的，它可以增强MLLMs的视觉表示。我们发现，CLIP最后几层的功能虽然与文本对齐，但缺乏详细信息。而与之相对的是，来自浅层和中间层的输出特征包含更多的图像细节，但语义对齐较差。因此，我们的MMFuser使用CLIP最后层的输出特征作为查询（Q），使用浅层和中间层的特征作为键（K）和值（V），来改善前面几层的语义对齐程度。通过应用注意力机制，我们融合了多层特征，以获得丰富详细并和文本对齐的图像表示。
+
 
 ## 效果
 
