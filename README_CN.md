@@ -32,7 +32,13 @@ Performance comparison of our method against the baseline and competing approach
 performance across diverse task categories. Our findings reveal that different
 layers of the vision encoder play distinct roles, emphasizing the necessity of
 task-aware feature fusion rather than static fusion strategies.
-+ 
++ We propose an instruction-guided vision aggregator, which dynamically assigns
+fusion weights to hierarchical visual features based on task-specific instructions.
+This mechanism enables LVLMs to selectively emphasize task-relevant features,
+improving adaptability without increasing the number of visual tokens.
++We integrate the proposed vision aggregator into the LLaVA-v1.5 framework,
+achieving significant improvements over the baseline and surpassing existing
+hierarchical visual feature fusion methods as well as similarly scaled LVLMs
 
 <p align="center">
     <img src="images/mmfuser-diagram.png" width="95%"></a>
