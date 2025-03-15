@@ -24,7 +24,7 @@
 ## 效果
 
 <p align="center">
-    <iframe  src="images/radar_chart.pdf" width="70%"></iframe></a>
+    <img src="images/radar_chart.png" width="70%"></a>
 </p>
 
 Performance comparison of our method against the baseline and competing approaches.
