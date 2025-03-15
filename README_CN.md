@@ -47,12 +47,10 @@ hierarchical visual feature fusion methods as well as similarly scaled LVLMs
 
 
 ## Framework
-<p align="center">
-    <img src="images/Framework.png" width="90%"></a>
-</p>
-The overall framework is illustrated in Fig~\ref{fig:framework}(a). It consists of 4 main modules: a vision encoder $V$, a vision-language adapter $ADP$, an instruction-guided vision aggregator $\mathit{IGVA}$, and an LLM. For demonstration purposes, we use the widely adopted LLaVA-v1.5 \cite{llava1.5} as the implementation framework.
 
-![Overview of the proposed framework.](figure/Figure_4.pdf){#fig:framework}
+The overall framework is illustrated . It consists of 4 main modules: a vision encoder $V$, a vision-language adapter $ADP$, an instruction-guided vision aggregator $\mathit{IGVA}$, and an LLM. For demonstration purposes, we use the widely adopted LLaVA-v1.5 \cite{llava1.5} as the implementation framework.
+
+![Overview of the proposed framework.](images/Framework.png){#fig:framework}
 
 **Vision Encoder**  
 We use CLIP-ViT \cite{clip} as the vision encoder. It divides an input image $\mathbf{I} \in \mathbb{R}^{C \times H \times W}$ into small patches and processes the patch sequence through a stack of transformer layers. The hierarchical output of the vision encoder is:
