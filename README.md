@@ -24,25 +24,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
     <img src="images/radar_chart.png" width="70%"></a>
 </p>
 
-Performance comparison of our method against the baseline and competing approaches.
-
-### Image-based VQA
-<p align="center">
-    <img src="images/VQA.png" width="90%"></a>
-</p>
-
-Performance comparison on mainstream image-based VQA benchmarks. Bold values
-indicate the best score in each row, while underlined values represent the second-best score.
-
-
-### Visual Grounding and Video Understanding
-<p align="center">
-    <img src="images/other.png" width="90%"></a>
-</p>
-
-Performance comparison on visual grounding and video understanding benchmarks. For
-visual grounding, the score of each benchmark is averaged across val and test splits. Bold values
-indicate the best score in each column, while underlined values represent the second-best score.
+Performance comparison of our method against the baseline model and two competing fusion approaches.
 
 
 
