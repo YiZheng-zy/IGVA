@@ -15,7 +15,6 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
 ## 目录
 - [Performance](#Performance)
 - [Framework](#Framework)
-- [Evaluate](#Evaluate)
 - [Install](#Install)
 - [Training](#Training)
 
@@ -27,6 +26,23 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
 
 Performance comparison of our method against the baseline and competing approaches.
 
+### VQA benchmarks
+<p align="center">
+    <img src="images/VQA.png" width="90%"></a>
+</p>
+
+Performance comparison on mainstream image-based VQA benchmarks. Bold values
+indicate the best score in each row, while underlined values represent the second-best score.
+
+
+### Visual Grounding and Video Understanding
+<p align="center">
+    <img src="images/other.png" width="90%"></a>
+</p>
+
+Performance comparison on visual grounding and video understanding benchmarks. For
+visual grounding, the score of each benchmark is averaged across val and test splits. Bold values
+indicate the best score in each column, while underlined values represent the second-best score.
 
 
 
@@ -93,24 +109,6 @@ where $D_t$ is the hidden dimension of the LLM.
 **Large Language Model**  
 The LLM first tokenizes the textual instruction and computes embeddings for each token. These text embeddings are then concatenated with the aligned visual features along the sequence dimension. The resulting combined sequence is processed through a stack of transformer layers, ultimately generating a textual response.
 
-## Evaluate
-### VQA benchmarks
-<p align="center">
-    <img src="images/VQA.png" width="90%"></a>
-</p>
-
-Performance comparison on mainstream image-based VQA benchmarks. Bold values
-indicate the best score in each row, while underlined values represent the second-best score.
-
-
-### Visual Grounding and Video Understanding
-<p align="center">
-    <img src="images/other.png" width="90%"></a>
-</p>
-
-Performance comparison on visual grounding and video understanding benchmarks. For
-visual grounding, the score of each benchmark is averaged across val and test splits. Bold values
-indicate the best score in each column, while underlined values represent the second-best score.
 
 
 
