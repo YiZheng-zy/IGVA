@@ -26,17 +26,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
 </p>
 
 Performance comparison of our method against the baseline and competing approaches.
-+ We systematically analyze how hierarchical visual features influence LVLM
-performance across diverse task categories. Our findings reveal that different
-layers of the vision encoder play distinct roles, emphasizing the necessity of
-task-aware feature fusion rather than static fusion strategies.
-+ We propose an instruction-guided vision aggregator, which dynamically assigns
-fusion weights to hierarchical visual features based on task-specific instructions.
-This mechanism enables LVLMs to selectively emphasize task-relevant features,
-improving adaptability without increasing the number of visual tokens.
-+ We integrate the proposed vision aggregator into the LLaVA-v1.5 framework,
-achieving significant improvements over the baseline and surpassing existing
-hierarchical visual feature fusion methods as well as similarly scaled LVLMs
+
 
 
 
@@ -113,20 +103,6 @@ Performance comparison on mainstream image-based VQA benchmarks. Bold values
 indicate the best score in each row, while underlined values represent the second-best score.
 
 
-Table presents a comparison of our method with the baseline and two existing hi-
-erarchical visual feature fusion approaches across 10 image-based VQA benchmarks,
-including 6 LVLM-specific benchmarks and 4 traditional VQA datasets.
-On LVLM-specific benchmarks, our method significantly outperforms the baseline
-and consistently surpasses existing fusion methods, demonstrating its effectiveness in
-leveraging hierarchical visual information tailored to different tasks. On traditional
-VQA benchmarks, our method achieves the highest scores on SQA, TextVQA, and
-VizWiz. While our approach surpasses both the baseline and MMFuser on GQA, it
-slightly underperforms DenseConnector. Since GQA is designed for compositional
-reasoning, the textual questions contain complex linguistic structures , which
-may challenge the sentence embedding model in accurately capturing task-relevant
-information. This, in turn, may hinder the vision aggregator from deriving optimal
-feature-weighting distributions.
-
 ### Visual Grounding and Video Understanding
 <p align="center">
     <img src="images/other.png" width="90%"></a>
@@ -136,21 +112,8 @@ Performance comparison on visual grounding and video understanding benchmarks. F
 visual grounding, the score of each benchmark is averaged across val and test splits. Bold values
 indicate the best score in each column, while underlined values represent the second-best score.
 
-Table presents the results for visual grounding, where our
-method consistently achieves the highest scores across all benchmarks. This high-lights its effectiveness in enhancing object-region alignment across diverse image
-contexts. The right section of table 5 reports the results for video understanding.
-Apart from ActivityNet-QA, where our method achieves performance on par with
-DenseConnector, it surpasses both the baseline and DenseConnector across all other
-video benchmarks. This demonstrates that our method captures richer task-related
-visual representations, which is crucial for modeling temporal dynamics and contex-tual dependencies across video frames.
 
-### Visual Representation Visualization
 
-To intuitively validate the impact of IGVA on visual features, we present the input and output feature map visualizations for four example images in the figure.
-
-<p align="center">
-    <img src="images/attention.png" width="90%"></a>
-</p>
 
 ## Install
 
