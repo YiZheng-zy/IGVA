@@ -26,7 +26,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
 
 Performance comparison of our method against the baseline and competing approaches.
 
-### VQA benchmarks
+### Image-based VQA
 <p align="center">
     <img src="images/VQA.png" width="90%"></a>
 </p>
