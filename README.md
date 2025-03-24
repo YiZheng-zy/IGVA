@@ -10,7 +10,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
 ## 📣 News
 
 - **[Dec 26, 2024]** The paper has been released on [arXiv](https://arxiv.org/abs/2501.08443)!
-- **[March 10, 202]**  🔥🔥🔥 Code has been released.
+- **[March 10, 2025]**  🔥🔥🔥 Code has been released.
 
 ## 目录
 - [Performance](#Performance)
