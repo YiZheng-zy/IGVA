@@ -127,11 +127,11 @@ The LLM first tokenizes the textual instruction and computes embeddings for each
 Our training pipeline and datasets  are directly borrowed from [LLaVA-v1.5](https://github.com/haotian-liu/LLaVA). The training consists of two stages: 
 - *Pretraining*: Train a projector on a subset of ~558K image-text pairs to connect a frozen pretrained vision encoder and a frozen LLM.
     ```bash
-    sh scripts/v1_5/pertrain_IGVA.sh
+    sh scripts/v1_5/pretrain_balance.sh
     ```
 - *Instruction Tuning*: Fine tune the entire MLLM using multimodal instruction data LLaVA-665K.
     ```bash
-    sh scripts/v1_5/finetune.sh
+    sh scripts/v1_5/finetune_balance.sh
     ```
 
 
