@@ -101,16 +101,19 @@ The LLM first tokenizes the textual instruction and computes embeddings for each
     ```bash
     git clone git@github.com:YiZheng-zy/IGVA.git
     cd IGVA
+    ```
     
 
 
 2.Install Package
     Our project is based on [LLaVA-1.5](https://github.com/haotian-liu/LLaVA) and creates relevant environments according to [LLaVA-1.5 Install](https://github.com/haotian-liu/LLaVA?tab=readme-ov-file#install).
 
+    ```bash
     conda create -n IGVA python=3.10 -y
     conda activate IGVA
     pip install --upgrade pip  
     pip install -e .
+    ```
     
 
 3. Install additional packages
