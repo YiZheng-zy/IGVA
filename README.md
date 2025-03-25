@@ -136,8 +136,8 @@ Our training pipeline and datasets  are directly borrowed from [LLaVA-v1.5](http
 
 ## Inference
 ···python
-python 
-
+python ./llava/serve/github_inference.py
+```
 
 
 ## 👍 Acknowledgement
