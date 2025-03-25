@@ -134,6 +134,10 @@ Our training pipeline and datasets  are directly borrowed from [LLaVA-v1.5](http
     sh scripts/v1_5/finetune_balance.sh
     ```
 
+## Inference
+···python
+python 
+
 
 
 ## 👍 Acknowledgement
