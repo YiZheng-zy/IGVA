@@ -24,7 +24,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
     <img src="images/radar_chart.png" width="70%"></a>
 </p>
 
-Performance comparison of our method against the baseline model and two competing fusion approaches.
+Performance comparison of our method against the baseline model () and two competing fusion approaches().
 
 
 
@@ -101,7 +101,7 @@ The LLM first tokenizes the textual instruction and computes embeddings for each
     ```bash
     git clone git@github.com:YiZheng-zy/IGVA.git
     cd IGVA
-    ```
+    
 
 
 2.Install Package
