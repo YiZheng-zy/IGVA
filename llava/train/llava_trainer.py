@@ -322,3 +322,45 @@ class LLaVATrainer(Trainer):
                     self.model.generation_config.temperature = 0.9  # 如果需要使用 temperature
                     self.model.generation_config.top_p = 0.6  # 如果需要使用 top_p      
             super(LLaVATrainer, self)._save(output_dir, state_dict)
+    
+    # 自定义计算损失，添加负载均衡损失
+    def compute_loss(self, model, inputs, return_outputs=False):
+        # 获取模型输出和主要任务的损失
+        outputs = model(**inputs)
+        task_loss = outputs.loss  # 主任务损失
+
+        # 获取当前批次的多层级权重信息
+        weights = outputs.get('weights')
+        
+        # 获取负载均衡损失的系数
+        lambda_balance = self.args.lambda_balance
+        
+        # 计算负载均衡损失
+        balance_loss = self.load_balancing_loss(weights)
+        total_loss = task_loss + lambda_balance * balance_loss
+        # print("###########################")
+        # print(f"task loss: {task_loss}")
+        # print(f"balance loss: {balance_loss}")
+        # print(f"total loss: {total_loss}")
+
+
+        return (total_loss, outputs) if return_outputs else total_loss
+
+    # 负载均衡损失函数，使用熵正则化
+    def load_balancing_loss(self, weights):
+        """
+        计算负载均衡损失，鼓励权重分布更均匀。
+        
+        参数:
+            weights (Tensor): 模型输出的权重，形状为 [batch_size, num_groups]
+
+        返回:
+            loss (Tensor): 负载均衡损失 
+        """
+        # 使用 softmax 归一化，以确保权重在 [0, 1] 范围内且和为 1
+        weights = torch.softmax(weights, dim=-1)
+
+        # 计算熵，最大化熵可以取负值再最小化
+        entropy = -torch.sum(weights * torch.log(weights + 1e-12), dim=-1)
+        loss = -torch.mean(entropy)
+        return loss   
