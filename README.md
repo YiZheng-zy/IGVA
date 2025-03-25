@@ -111,7 +111,7 @@ The LLM first tokenizes the textual instruction and computes embeddings for each
     conda activate IGVA
     pip install --upgrade pip  
     pip install -e .
-    ```
+    
 
 3. Install additional packages
 
