@@ -160,7 +160,7 @@ if not vision_tower.is_loaded:
         vision_tower.load_model(device_map=device_map)
 if device_map != 'auto': 
         vision_tower.to(device=device_map, dtype=torch_dtype)
-image_processor = vision_tower.image_processor # 是CLIPImageProcessor类 
+image_processor = vision_tower.image_processor 
 
 # ----------------------------image preprocessing----------------------------
 image_file = "/home/lx/LLaVA/llava/serve/examples/ex3.jpg" # path to the input image
@@ -182,7 +182,6 @@ inp = DEFAULT_IMAGE_TOKEN + '\n' + inp
 conv.append_message(conv.roles[0], inp)
 conv.append_message(conv.roles[1], None)
 prompt = conv.get_prompt()
-print(prompt)
 
 # ----------------------------sentence embedding----------------------------
 sentence_embeds = sentence_embedder.encode([instruction], convert_to_tensor=True)
