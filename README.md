@@ -135,6 +135,7 @@ Our training pipeline and datasets  are directly borrowed from [LLaVA-v1.5](http
     ```
 
 ## Inference
+```python
 
 from llava.model.language_model.llava_llama import LlavaLlamaModel, LlavaConfig, LlavaLlamaForCausalLM
 from llava.conversation import conv_templates, SeparatorStyle
@@ -197,7 +198,7 @@ with torch.inference_mode():
         )
 output_text = tokenizer.decode(output_ids[0])
 print(output_text)
-
+```
 
 
 
