@@ -24,7 +24,7 @@ The official implementation of the paper "[Instruction-Guided Fusion of Multi-La
     <img src="images/radar_chart.png" width="70%"></a>
 </p>
 
-Performance comparison of our method against the baseline model () and two competing fusion approaches().
+Performance comparison of our method against the baseline model ([LLaVA-1.5](https://github.com/haotian-liu/LLaVA)) and two competing fusion approaches([MMFuser](https://github.com/yuecao0119/MMFuser) and [DenseConnector](https://github.com/HJYao00/DenseConnector)).
 
 
 
